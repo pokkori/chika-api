@@ -4,6 +4,10 @@ import { CopyableCode } from '@/components/CopyableCode';
 const curlExample = `curl -H "X-API-Key: YOUR_API_KEY" \\
   "https://chika-api.vercel.app/api/v1/land-price?prefecture=13&city=13101&year=2024"`;
 
+const SHARE_TEXT = encodeURIComponent(
+  'ChikaAPI - 地価データREST API。国土交通省の地価データをシンプルなAPIで取得 #ChikaAPI #不動産テック #API https://chika-api.vercel.app'
+);
+
 export default function HomePage() {
   return (
     <main style={{ backgroundColor: '#0F172A', minHeight: '100vh', color: '#F8FAFC' }}>
@@ -17,15 +21,12 @@ export default function HomePage() {
         }}
       >
         <div
+          className="inline-block backdrop-blur-sm bg-white/10 border border-white/20 shadow-lg rounded-2xl"
           style={{
-            display: 'inline-block',
-            backgroundColor: '#1E3A5F',
             color: '#60A5FA',
             padding: '4px 16px',
-            borderRadius: 99,
             fontSize: 14,
             marginBottom: 24,
-            border: '1px solid #3B82F6',
           }}
         >
           無料プランあり - クレジットカード不要
@@ -94,6 +95,27 @@ export default function HomePage() {
           >
             APIドキュメント
           </a>
+          <a
+            href={`https://twitter.com/intent/tweet?text=${SHARE_TEXT}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="ChikaAPIをXでシェアする"
+            className="bg-black text-white rounded-lg px-4 py-2"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              minHeight: 44,
+              textDecoration: 'none',
+              fontSize: 14,
+              fontWeight: 600,
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+            Xでシェア
+          </a>
         </div>
       </section>
 
@@ -152,11 +174,9 @@ export default function HomePage() {
           ].map((f) => (
             <div
               key={f.title}
+              className="backdrop-blur-sm bg-white/10 border border-white/20 shadow-lg rounded-2xl"
               style={{
-                backgroundColor: '#1E293B',
-                borderRadius: 12,
                 padding: 28,
-                border: '1px solid #334155',
               }}
             >
               <div style={{ marginBottom: 16 }}>{f.icon}</div>
@@ -258,6 +278,7 @@ export default function HomePage() {
             }}
           >
             <summary
+              aria-label={q}
               style={{
                 padding: '16px 20px',
                 fontSize: 16,
@@ -281,6 +302,41 @@ export default function HomePage() {
             </p>
           </details>
         ))}
+      </section>
+
+      {/* Share Section */}
+      <section
+        style={{
+          maxWidth: 700,
+          margin: '0 auto',
+          padding: '0 24px 60px',
+          textAlign: 'center',
+        }}
+      >
+        <p style={{ fontSize: 16, color: '#94A3B8', marginBottom: 16 }}>
+          ChikaAPIを知人・同僚にシェアしよう
+        </p>
+        <a
+          href={`https://twitter.com/intent/tweet?text=${SHARE_TEXT}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="ChikaAPIをXでシェアする"
+          className="bg-black text-white rounded-lg px-4 py-2"
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            minHeight: 44,
+            textDecoration: 'none',
+            fontSize: 14,
+            fontWeight: 600,
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+          </svg>
+          Xでシェアする
+        </a>
       </section>
 
       {/* Footer */}
