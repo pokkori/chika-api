@@ -1,5 +1,6 @@
 import { PlanCard } from '@/components/PlanCard';
 import { CopyableCode } from '@/components/CopyableCode';
+import { StreakBadge } from '@/components/StreakBadge';
 
 const curlExample = `curl -H "X-API-Key: YOUR_API_KEY" \\
   "https://chika-api.vercel.app/api/v1/land-price?prefecture=13&city=13101&year=2024"`;
@@ -41,6 +42,7 @@ export default function HomePage() {
           }}
         >
           ChikaAPI
+          <StreakBadge streakKey="chika_api" />
           <br />
           <span style={{ color: '#3B82F6' }}>地価データREST API</span>
         </h1>
