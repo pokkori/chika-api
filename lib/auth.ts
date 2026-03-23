@@ -1,11 +1,6 @@
 import { createHash } from 'crypto';
-import { createClient } from '@supabase/supabase-js';
+import { getSupabase } from './supabase';
 export { generateApiKey } from './crypto';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || '',
-);
 
 export interface AuthResult {
   valid: boolean;
@@ -40,7 +35,7 @@ export async function verifyApiKey(apiKey: string | null): Promise<AuthResult> {
 
   const hashed = createHash('sha256').update(apiKey).digest('hex');
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from('api_keys')
     .select('id, user_id, plan, is_active, expires_at')
     .eq('key', hashed)
