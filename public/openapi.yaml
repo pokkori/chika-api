@@ -1,0 +1,243 @@
+openapi: 3.0.0
+info:
+  title: ChikaAPI
+  version: 1.0.0
+  description: 国土交通省公示地価・路線価・基準地価REST API
+  contact:
+    url: https://chika-api.vercel.app/docs
+servers:
+  - url: https://chika-api.vercel.app/api/v1
+    description: 本番環境
+security:
+  - ApiKeyAuth: []
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  schemas:
+    LandPrice:
+      type: object
+      properties:
+        point_id:
+          type: string
+          description: "地点ID"
+        address:
+          type: string
+          description: "住所"
+        prefecture_code:
+          type: string
+          description: "都道府県コード"
+        city_code:
+          type: string
+          description: "市区町村コード"
+        use_category:
+          type: string
+          enum: [住宅地, 商業地, 工業地, 準工業地]
+          description: "用途区分"
+        price_per_sqm:
+          type: integer
+          description: "円/平方メートル"
+        year:
+          type: integer
+          description: "年"
+        lat:
+          type: number
+          description: "緯度"
+        lon:
+          type: number
+          description: "経度"
+    TrendPoint:
+      type: object
+      properties:
+        year:
+          type: integer
+        avg_price_per_sqm:
+          type: integer
+    RoutePrice:
+      type: object
+      properties:
+        station:
+          type: string
+        price_per_sqm:
+          type: integer
+        year:
+          type: integer
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        code:
+          type: string
+        docs_url:
+          type: string
+paths:
+  /land-price:
+    get:
+      summary: 地価検索
+      description: 都道府県・市区町村・年・用途区分で地価データを検索します。
+      parameters:
+        - name: prefecture
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: "都道府県コード（例: 13=東京都）"
+          example: 13
+        - name: city
+          in: query
+          schema:
+            type: integer
+          description: "市区町村コード（例: 13101=千代田区）"
+          example: 13101
+        - name: year
+          in: query
+          schema:
+            type: integer
+          description: "公示年（例: 2024）"
+          example: 2024
+        - name: use_category
+          in: query
+          schema:
+            type: string
+            enum: [住宅地, 商業地, 工業地]
+          description: "用途区分"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+            maximum: 1000
+          description: "件数上限"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LandPrice'
+                  total:
+                    type: integer
+                  cached:
+                    type: boolean
+        '400':
+          description: パラメータ不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: APIキー不正
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: レート制限超過
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /land-price/trend:
+    get:
+      summary: 周辺地価推移
+      description: 緯度・経度を指定して、半径内の地価の経年推移を取得します。
+      parameters:
+        - name: lat
+          in: query
+          required: true
+          schema:
+            type: number
+          description: "緯度"
+          example: 35.6762
+        - name: lon
+          in: query
+          required: true
+          schema:
+            type: number
+          description: "経度"
+          example: 139.6503
+        - name: radius
+          in: query
+          schema:
+            type: integer
+            default: 1000
+          description: "半径（メートル）"
+        - name: years
+          in: query
+          schema:
+            type: integer
+            default: 5
+          description: "取得年数（最大10）"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TrendPoint'
+                  lat:
+                    type: number
+                  lon:
+                    type: number
+                  radius_m:
+                    type: integer
+                  years:
+                    type: integer
+        '401':
+          description: APIキー不正
+        '429':
+          description: レート制限超過
+  /route-price:
+    get:
+      summary: 路線価検索
+      description: 路線名（例: 山手線）ごとの各駅周辺の路線価を取得します。
+      parameters:
+        - name: prefecture
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: "都道府県コード"
+          example: 13
+        - name: line
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "路線名（例: 山手線）"
+          example: "山手線"
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RoutePrice'
+                  prefecture:
+                    type: string
+                  line:
+                    type: string
+                  total:
+                    type: integer
+        '401':
+          description: APIキー不正
+        '429':
+          description: レート制限超過
