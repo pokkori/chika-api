@@ -34,11 +34,31 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "ChikaAPI",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "description": "国土交通省公示地価・路線価・基準地価を即時取得できるREST API。不動産会社・フィンテック向け。",
+  "url": "https://chika-api.vercel.app",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY",
+    "description": "Freeプラン100req/日無料。Standardプラン月額2,980円"
+  },
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </head>
       <body className={inter.className}>{children}</body>
     </html>

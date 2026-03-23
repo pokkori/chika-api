@@ -5,5 +5,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: 'https://chika-api.vercel.app', lastModified: new Date(), changeFrequency: 'monthly', priority: 1 },
     { url: 'https://chika-api.vercel.app/docs', lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
     { url: 'https://chika-api.vercel.app/dashboard', lastModified: new Date(), changeFrequency: 'never', priority: 0.5 },
+    { url: 'https://chika-api.vercel.app/privacy', lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
+    { url: 'https://chika-api.vercel.app/legal', lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
   ];
 }
