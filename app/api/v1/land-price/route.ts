@@ -67,10 +67,10 @@ export async function GET(req: NextRequest) {
   // 使用量をSupabaseに記録（非同期・エラーでも処理継続）
   if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
     const supabase = getSupabase();
-    supabase.rpc('increment_usage', {
+    void Promise.resolve(supabase.rpc('increment_usage', {
       p_api_key_id: auth.apiKeyId,
       p_date: new Date().toISOString().slice(0, 10),
-    }).then(() => {}).catch(console.error);
+    })).catch(console.error);
   }
 
   const data = await fetchLandPrice({ prefectureCode: prefecture, cityCode: city, year, useCategory, limit });
