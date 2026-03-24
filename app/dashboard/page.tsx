@@ -338,6 +338,142 @@ export default function DashboardPage() {
               ))}
             </div>
 
+            {/* Upgrade CTA（Freeプランのみ） */}
+            {dashboardData.plan === 'free' && (
+              <div
+                aria-label="Proプランへのアップグレード案内"
+                style={{
+                  background:
+                    'linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(217,119,6,0.08) 100%)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(245,158,11,0.35)',
+                  borderRadius: 16,
+                  padding: '28px 32px',
+                  marginBottom: 32,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: 24,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, flex: 1, minWidth: 260 }}>
+                  {/* アイコン */}
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 12,
+                      background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}
+                    aria-hidden="true"
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
+                        stroke="#0F172A"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <p
+                      style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        color: '#F59E0B',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.1em',
+                        margin: '0 0 6px',
+                      }}
+                    >
+                      Freeプラン制限中
+                    </p>
+                    <h3 style={{ fontSize: 20, fontWeight: 800, color: '#F8FAFC', margin: '0 0 8px' }}>
+                      Proプランにアップグレードして制限を解除
+                    </h3>
+                    <p style={{ fontSize: 14, color: '#CBD5E1', margin: 0, lineHeight: 1.6 }}>
+                      日次100リクエスト制限を解除。Webhook通知・商用利用・47都道府県フィルタが無制限に。
+                      月額¥49,800で本格的な不動産データ活用を始めましょう。
+                    </p>
+                    <div style={{ display: 'flex', gap: 20, marginTop: 12 }}>
+                      {[
+                        { label: '日次リクエスト', free: '100', pro: '無制限' },
+                        { label: 'Webhook通知', free: '不可', pro: '可' },
+                        { label: '商用利用', free: '不可', pro: '可' },
+                      ].map((item) => (
+                        <div key={item.label}>
+                          <p style={{ fontSize: 11, color: '#64748B', margin: '0 0 2px', fontWeight: 600 }}>
+                            {item.label}
+                          </p>
+                          <p style={{ fontSize: 13, color: '#F59E0B', margin: 0, fontWeight: 700 }}>
+                            {item.pro}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, flexShrink: 0 }}>
+                  <a
+                    href="/#plans"
+                    aria-label="Proプランにアップグレードして制限を解除する"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 8,
+                      backgroundColor: '#F59E0B',
+                      color: '#0F172A',
+                      textDecoration: 'none',
+                      borderRadius: 10,
+                      padding: '14px 28px',
+                      fontSize: 15,
+                      fontWeight: 800,
+                      minHeight: 44,
+                      whiteSpace: 'nowrap',
+                      boxShadow: '0 0 24px rgba(245,158,11,0.35)',
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"
+                        stroke="#0F172A"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    Proプランへアップグレード
+                  </a>
+                  <a
+                    href="/docs#sandbox"
+                    aria-label="APIドキュメントを確認する"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#94A3B8',
+                      textDecoration: 'none',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      minHeight: 44,
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    プラン詳細を確認する
+                  </a>
+                </div>
+              </div>
+            )}
+
             {/* 今日のお宝物件候補TOP3 */}
             {topProperties.length > 0 && (
               <div

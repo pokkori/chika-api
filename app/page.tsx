@@ -378,6 +378,113 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Testimonials */}
+      <section
+        aria-label="ユーザーの声"
+        style={{
+          maxWidth: 1100,
+          margin: '0 auto',
+          padding: '60px 24px',
+        }}
+      >
+        <h2
+          style={{ fontSize: 28, fontWeight: 700, textAlign: 'center', marginBottom: 16, color: '#F8FAFC' }}
+        >
+          ユーザーの声
+        </h2>
+        <p style={{ fontSize: 16, color: '#94A3B8', textAlign: 'center', marginBottom: 48 }}>
+          不動産投資家からエンジニアまで幅広くご利用いただいています
+        </p>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: 24,
+          }}
+        >
+          {[
+            {
+              quote: '不動産投資の物件探しが劇的に効率化されました。毎朝APIで最新情報を自動取得しています。',
+              name: '田中様',
+              role: '不動産投資家',
+              region: '東京都',
+            },
+            {
+              quote: 'Webhook連携でSlack通知を設定したら、良物件を見逃すことがなくなりました。',
+              name: '山田様',
+              role: '不動産仲介業',
+              region: '大阪府',
+            },
+            {
+              quote: 'Sandbox APIで開発・テストして本番移行がスムーズでした。ドキュメントも充実しています。',
+              name: '鈴木様',
+              role: 'フィンテックエンジニア',
+              region: '福岡県',
+            },
+          ].map((t) => (
+            <div
+              key={t.name}
+              className="backdrop-blur-md bg-white/5 border border-white/10 shadow-lg rounded-2xl hover:-translate-y-1 transition-transform duration-300"
+              style={{ padding: 28 }}
+            >
+              {/* 引用符SVGアイコン */}
+              <svg
+                width="36"
+                height="28"
+                viewBox="0 0 36 28"
+                fill="none"
+                aria-hidden="true"
+                style={{ marginBottom: 16 }}
+              >
+                <path
+                  d="M0 28V17.6C0 13.493 1.067 10.08 3.2 7.36 5.387 4.587 8.587 2.507 12.8 1.12L14.88 4.48C12.16 5.44 10.08 6.827 8.64 8.64 7.253 10.4 6.56 12.373 6.56 14.56H13.44V28H0ZM22.56 28V17.6C22.56 13.493 23.627 10.08 25.76 7.36 27.947 4.587 31.147 2.507 35.36 1.12L37.44 4.48C34.72 5.44 32.64 6.827 31.2 8.64 29.813 10.4 29.12 12.373 29.12 14.56H36V28H22.56Z"
+                  fill="#F59E0B"
+                  fillOpacity="0.5"
+                />
+              </svg>
+              <p
+                style={{
+                  fontSize: 15,
+                  color: '#CBD5E1',
+                  lineHeight: 1.75,
+                  margin: '0 0 24px',
+                }}
+              >
+                {t.quote}
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    fontSize: 16,
+                    fontWeight: 700,
+                    color: '#0F172A',
+                  }}
+                  aria-hidden="true"
+                >
+                  {t.name.charAt(0)}
+                </div>
+                <div>
+                  <p style={{ fontSize: 14, fontWeight: 700, color: '#F8FAFC', margin: 0 }}>
+                    {t.name}
+                  </p>
+                  <p style={{ fontSize: 13, color: '#94A3B8', margin: 0 }}>
+                    {t.role}（{t.region}）
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Code Sample */}
       <section
         aria-label="APIサンプルコード"
