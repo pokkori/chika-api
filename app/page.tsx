@@ -85,6 +85,30 @@ export default function HomePage() {
             無料で始める
           </a>
           <a
+            href="/docs#sandbox"
+            aria-label="登録不要のサンドボックスAPIを今すぐ試す"
+            className="hover:scale-105 hover:shadow-[0_0_20px_rgba(245,158,11,0.2)] transition-all duration-300"
+            style={{
+              backgroundColor: 'transparent',
+              color: '#F59E0B',
+              padding: '14px 28px',
+              borderRadius: 8,
+              fontSize: 15,
+              fontWeight: 700,
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              minHeight: 44,
+              border: '1px solid rgba(245,158,11,0.4)',
+              gap: 8,
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M6 3l6 5-6 5V3z" fill="#F59E0B" />
+            </svg>
+            サンドボックスで今すぐ試す（登録不要）
+          </a>
+          <a
             href="/docs"
             aria-label="APIドキュメントを見る"
             className="hover:scale-105 transition-all duration-300"
@@ -278,6 +302,57 @@ export default function HomePage() {
             <PlanCard key={plan} plan={plan} />
           ))}
         </div>
+
+        {/* 請求書払い案内 */}
+        <div
+          className="backdrop-blur-sm bg-white/5 border border-white/10"
+          style={{
+            borderRadius: 16,
+            padding: '24px 28px',
+            marginTop: 32,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 20,
+            flexWrap: 'wrap',
+          }}
+        >
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <h3 style={{ fontSize: 17, fontWeight: 700, color: '#F8FAFC', margin: '0 0 6px' }}>
+              法人・官公庁向け 請求書払い対応
+            </h3>
+            <p style={{ fontSize: 14, color: '#94A3B8', margin: 0, lineHeight: 1.6 }}>
+              クレジットカード不要。インボイス対応の請求書払いをご利用いただけます。
+              お申し込み後3営業日以内にご連絡します。
+            </p>
+          </div>
+          <a
+            href="/invoice"
+            aria-label="請求書払いの申請フォームへ移動する"
+            className="hover:scale-105 transition-all duration-200"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              backgroundColor: 'transparent',
+              color: '#F59E0B',
+              textDecoration: 'none',
+              padding: '12px 20px',
+              borderRadius: 8,
+              fontSize: 14,
+              fontWeight: 700,
+              minHeight: 44,
+              border: '1px solid rgba(245,158,11,0.4)',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="3" y="2" width="10" height="12" rx="1.5" stroke="#F59E0B" strokeWidth="1.5" />
+              <path d="M6 6h4M6 8.5h4M6 11h2" stroke="#F59E0B" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            請求書払いを申請する
+          </a>
+        </div>
       </section>
 
       {/* FAQ */}
@@ -404,7 +479,21 @@ export default function HomePage() {
               aria-label="APIドキュメントページへ"
               style={{ color: '#94A3B8', textDecoration: 'none', fontSize: 14, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
             >
-              APIドキュメント
+              Docs
+            </a>
+            <a
+              href="/webhooks"
+              aria-label="Webhook設定ページへ"
+              style={{ color: '#94A3B8', textDecoration: 'none', fontSize: 14, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
+            >
+              Webhooks
+            </a>
+            <a
+              href="/invoice"
+              aria-label="請求書払い申請ページへ"
+              style={{ color: '#94A3B8', textDecoration: 'none', fontSize: 14, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
+            >
+              請求書払い
             </a>
             <a
               href="/dashboard"
