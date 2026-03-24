@@ -78,7 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   name: 'データの更新頻度は？',
                   acceptedAnswer: {
                     '@type': 'Answer',
-                    text: '毎日午前2時（JST）に自動クロールで全国の最新競売公示情報を取得・更新します。',
+                    text: '毎日午前9時（JST）にVercel Cronで自動クロールを実行し、全国の最新競売公示情報を取得・更新します。',
                   },
                 },
                 {

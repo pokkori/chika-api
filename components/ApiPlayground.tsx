@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
+import { CopyableCode } from '@/components/CopyableCode';
 
 const ENDPOINTS = [
   {
@@ -37,7 +38,11 @@ export function ApiPlayground() {
   const [displayedResponse, setDisplayedResponse] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [statusCode, setStatusCode] = useState<number | null>(null);
+  const [hasSucceeded, setHasSucceeded] = useState(false);
+  const [showSuccessBanner, setShowSuccessBanner] = useState(false);
+  const [bannerVisible, setBannerVisible] = useState(false);
   const streamTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const bannerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!response) { setDisplayedResponse(''); return; }
@@ -77,6 +82,19 @@ export function ApiPlayground() {
       ? `curl "${buildUrl()}"`
       : `curl -H "X-API-Key: ${apiKey || 'YOUR_API_KEY'}" \\\n  "${buildUrl()}"`;
 
+  const triggerSuccessBanner = () => {
+    if (bannerTimerRef.current) clearTimeout(bannerTimerRef.current);
+    setShowSuccessBanner(true);
+    // CSSトランジション用: 次フレームでvisibleにする
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => setBannerVisible(true));
+    });
+    bannerTimerRef.current = setTimeout(() => {
+      setBannerVisible(false);
+      bannerTimerRef.current = setTimeout(() => setShowSuccessBanner(false), 400);
+    }, 3000);
+  };
+
   const handleExecute = async () => {
     setLoading(true);
     setResponse('');
@@ -90,6 +108,11 @@ export function ApiPlayground() {
       setStatusCode(res.status);
       const json = await res.json();
       setResponse(JSON.stringify(json, null, 2));
+      // 初回成功時のGameFeel演出
+      if (res.status < 400 && !hasSucceeded) {
+        setHasSucceeded(true);
+        triggerSuccessBanner();
+      }
     } catch (err) {
       setResponse(String(err));
     } finally {
@@ -185,10 +208,40 @@ export function ApiPlayground() {
 
       <div>
         <p style={{ fontSize: 12, color: '#94A3B8', marginBottom: 8 }}>curlコマンド（コピーして使用可）</p>
-        <pre style={{ backgroundColor: '#0F172A', padding: 12, borderRadius: 6, fontSize: 13, color: '#E2E8F0', overflowX: 'auto', margin: 0 }}>
-          {curlCommand}
-        </pre>
+        <CopyableCode code={curlCommand} language="bash" />
       </div>
+
+      {/* 初回APIコール成功バナー */}
+      {showSuccessBanner && (
+        <div
+          role="status"
+          aria-live="polite"
+          aria-label="初回APIコール成功"
+          style={{
+            backgroundColor: '#052E16',
+            border: '1px solid #16A34A',
+            borderRadius: 8,
+            padding: '12px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            opacity: bannerVisible ? 1 : 0,
+            transform: bannerVisible ? 'translateY(0)' : 'translateY(-8px)',
+            transition: 'opacity 0.3s ease, transform 0.3s ease',
+          }}
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="10" cy="10" r="9" stroke="#22C55E" strokeWidth="1.5" />
+            <path d="M6 10L9 13L14 7" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <span style={{ fontSize: 14, fontWeight: 700, color: '#22C55E' }}>
+            初回APIコール成功！
+          </span>
+          <span style={{ fontSize: 13, color: '#86EFAC' }}>
+            レスポンスを確認してみましょう。
+          </span>
+        </div>
+      )}
 
       <button
         onClick={handleExecute}

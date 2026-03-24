@@ -9,6 +9,7 @@ function getSupabase() {
 }
 
 const KOMOJU_PLAN_IDS: Record<string, string> = {
+  starter: process.env.KOMOJU_PLAN_ID_STARTER || '',
   basic: process.env.KOMOJU_PLAN_ID_BASIC || '',
   pro: process.env.KOMOJU_PLAN_ID_PRO || '',
   enterprise: process.env.KOMOJU_PLAN_ID_ENTERPRISE || '',
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
 
   const { plan, email } = body as { plan: string; email: string };
 
-  if (!['basic', 'pro', 'enterprise'].includes(plan)) {
+  if (!['starter', 'basic', 'pro', 'enterprise'].includes(plan)) {
     return NextResponse.json({ error: '無効なプランです' }, { status: 400 });
   }
 

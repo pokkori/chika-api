@@ -1,3 +1,5 @@
+'use client';
+import { useState } from 'react';
 import { PlanCard } from '@/components/PlanCard';
 import { CopyableCode } from '@/components/CopyableCode';
 import { StreakBadge } from '@/components/StreakBadge';
@@ -12,6 +14,47 @@ const SHARE_TEXT = encodeURIComponent(
 );
 
 export default function HomePage() {
+  const [planEmail, setPlanEmail] = useState('');
+  const [planLoading, setPlanLoading] = useState<string | null>(null);
+  const [planError, setPlanError] = useState<string | null>(null);
+  const [showEmailModal, setShowEmailModal] = useState<string | null>(null);
+
+  const handlePlanSelect = async (plan: string) => {
+    if (plan === 'free') {
+      window.location.href = '/api/auth/register';
+      return;
+    }
+    if (plan === 'enterprise') {
+      window.location.href = '/invoice';
+      return;
+    }
+    // Starter / Basic / Pro: KOMOJUチェックアウト
+    setShowEmailModal(plan);
+  };
+
+  const handleCheckout = async () => {
+    if (!planEmail.trim() || !showEmailModal) return;
+    setPlanLoading(showEmailModal);
+    setPlanError(null);
+    try {
+      const res = await fetch('/api/komoju/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: showEmailModal, email: planEmail.trim() }),
+      });
+      const data = await res.json();
+      if (data.redirect_url) {
+        window.location.href = data.redirect_url;
+      } else {
+        setPlanError(data.error || '決済セッションの作成に失敗しました。しばらく後にお試しください。');
+        setPlanLoading(null);
+      }
+    } catch {
+      setPlanError('通信エラーが発生しました。しばらく後にお試しください。');
+      setPlanLoading(null);
+    }
+  };
+
   return (
     <main
       style={{ backgroundColor: '#0F172A', minHeight: '100vh', color: '#F8FAFC' }}
@@ -294,14 +337,110 @@ export default function HomePage() {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
             gap: 24,
           }}
         >
-          {(['free', 'basic', 'pro', 'enterprise'] as const).map((plan) => (
-            <PlanCard key={plan} plan={plan} />
+          {(['free', 'starter', 'basic', 'pro', 'enterprise'] as const).map((plan) => (
+            <PlanCard key={plan} plan={plan} onSelect={handlePlanSelect} />
           ))}
         </div>
+
+        {/* メールアドレス入力モーダル */}
+        {showEmailModal && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${showEmailModal}プランのチェックアウト`}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              backgroundColor: 'rgba(0,0,0,0.7)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000,
+              padding: 24,
+            }}
+          >
+            <div
+              className="backdrop-blur-md bg-white/5 border border-white/20 shadow-2xl"
+              style={{ borderRadius: 16, padding: 32, maxWidth: 440, width: '100%' }}
+            >
+              <h3 style={{ fontSize: 20, fontWeight: 700, color: '#F8FAFC', margin: '0 0 8px' }}>
+                {showEmailModal.charAt(0).toUpperCase() + showEmailModal.slice(1)}プランへアップグレード
+              </h3>
+              <p style={{ fontSize: 14, color: '#94A3B8', margin: '0 0 20px', lineHeight: 1.6 }}>
+                メールアドレスを入力してKOMOJU決済へ進みます。
+              </p>
+              <label htmlFor="checkout-email" style={{ fontSize: 14, color: '#94A3B8', display: 'block', marginBottom: 6 }}>
+                メールアドレス
+              </label>
+              <input
+                id="checkout-email"
+                type="email"
+                aria-label="KOMOJUチェックアウト用メールアドレスを入力"
+                placeholder="you@example.com"
+                value={planEmail}
+                onChange={(e) => setPlanEmail(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleCheckout(); }}
+                style={{
+                  width: '100%',
+                  backgroundColor: '#0F172A',
+                  color: '#F8FAFC',
+                  border: '1px solid #334155',
+                  borderRadius: 8,
+                  padding: '12px 14px',
+                  fontSize: 15,
+                  minHeight: 44,
+                  marginBottom: 16,
+                  boxSizing: 'border-box',
+                }}
+              />
+              {planError && (
+                <p style={{ fontSize: 13, color: '#EF4444', marginBottom: 12 }}>{planError}</p>
+              )}
+              <div style={{ display: 'flex', gap: 12 }}>
+                <button
+                  onClick={handleCheckout}
+                  disabled={!!planLoading || !planEmail.trim()}
+                  aria-label="KOMOJUチェックアウトへ進む"
+                  style={{
+                    flex: 1,
+                    backgroundColor: planLoading ? '#334155' : '#F59E0B',
+                    color: planLoading ? '#F8FAFC' : '#0F172A',
+                    border: 'none',
+                    borderRadius: 8,
+                    padding: '12px 20px',
+                    fontSize: 15,
+                    fontWeight: 700,
+                    cursor: planLoading ? 'not-allowed' : 'pointer',
+                    minHeight: 44,
+                  }}
+                >
+                  {planLoading ? '処理中...' : '決済へ進む'}
+                </button>
+                <button
+                  onClick={() => { setShowEmailModal(null); setPlanError(null); setPlanEmail(''); }}
+                  aria-label="チェックアウトをキャンセル"
+                  style={{
+                    backgroundColor: '#1E293B',
+                    color: '#94A3B8',
+                    border: '1px solid #334155',
+                    borderRadius: 8,
+                    padding: '12px 20px',
+                    fontSize: 15,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    minHeight: 44,
+                  }}
+                >
+                  キャンセル
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* 請求書払い案内 */}
         <div
