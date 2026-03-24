@@ -2,6 +2,7 @@
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -17,6 +18,14 @@ interface UsageData {
 interface UsageChartProps {
   data: UsageData[];
   dailyLimit: number;
+}
+
+function getBarColor(count: number, dailyLimit: number): string {
+  if (dailyLimit <= 0) return '#3B82F6';
+  const ratio = count / dailyLimit;
+  if (ratio >= 0.8) return '#EF4444'; // 80%以上: 赤・危険
+  if (ratio >= 0.6) return '#F59E0B'; // 60〜80%: 黄・警告
+  return '#3B82F6';                   // 0〜60%: 青
 }
 
 export function UsageChart({ data, dailyLimit }: UsageChartProps) {
@@ -45,7 +54,14 @@ export function UsageChart({ data, dailyLimit }: UsageChartProps) {
             contentStyle={{ backgroundColor: '#1E293B', border: '1px solid #334155', borderRadius: 8, color: '#F8FAFC', fontSize: 14 }}
             formatter={(value: number) => [`${value.toLocaleString()} リクエスト`, '使用量']}
           />
-          <Bar dataKey="count" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+            {data.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={getBarColor(entry.count, dailyLimit)}
+              />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>

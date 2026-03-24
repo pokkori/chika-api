@@ -75,6 +75,7 @@ export async function GET(req: NextRequest) {
 
   const DAILY_LIMITS: Record<string, number> = {
     free: 100,
+    starter: 1000,
     basic: 10000,
     pro: 100000,
     enterprise: 99999999,

@@ -55,6 +55,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
+              '@type': 'SoftwareApplication',
+              name: '競売物件データAPI',
+              applicationCategory: 'BusinessApplication',
+              operatingSystem: 'Web',
+              url: 'https://auction-property-api.vercel.app',
+              description: '裁判所競売物件情報をRESTful APIで提供。不動産投資家・テック企業向けのDaaS。毎日自動更新、47都道府県対応。',
+              offers: {
+                '@type': 'AggregateOffer',
+                priceCurrency: 'JPY',
+                priceRange: '¥2,980〜',
+                offers: [
+                  { '@type': 'Offer', name: 'Freeプラン', price: '0', priceCurrency: 'JPY' },
+                  { '@type': 'Offer', name: 'Starterプラン', price: '2980', priceCurrency: 'JPY' },
+                  { '@type': 'Offer', name: 'Basicプラン', price: '9800', priceCurrency: 'JPY' },
+                ],
+              },
+              provider: {
+                '@type': 'Organization',
+                name: '競売物件データAPI',
+                url: 'https://auction-property-api.vercel.app',
+              },
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
               '@type': 'FAQPage',
               mainEntity: [
                 {

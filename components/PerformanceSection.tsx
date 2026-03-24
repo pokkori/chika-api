@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 
-const BAR_DATA = [
+const BASE_BAR_DATA = [
   { day: '月', requests: 82, color: '#3B82F6' },
   { day: '火', requests: 95, color: '#3B82F6' },
   { day: '水', requests: 71, color: '#3B82F6' },
@@ -11,10 +11,10 @@ const BAR_DATA = [
   { day: '日', requests: 147, color: '#22C55E' },
 ];
 
-const MAX_VAL = 160;
-
 export function PerformanceSection() {
   const [active, setActive] = useState(false);
+  const [barData, setBarData] = useState(BASE_BAR_DATA);
+  const [todayLabel, setTodayLabel] = useState('日曜: 147件（今週最多）');
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,6 +28,37 @@ export function PerformanceSection() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch('/api/v1/auctions/stats');
+        if (!res.ok) return;
+        const json = await res.json() as { total_open?: number; updated_at?: string };
+        const totalOpen = typeof json.total_open === 'number' ? json.total_open : null;
+        if (totalOpen === null) return;
+        // 今日の曜日インデックス（0=日曜→末尾）
+        const dayIndex = new Date().getDay(); // 0=Sun, 1=Mon ... 6=Sat
+        const dayLabels = ['日', '月', '火', '水', '木', '金', '土'];
+        const todayDayLabel = dayLabels[dayIndex];
+        const updated = Array.from(BASE_BAR_DATA);
+        // 末尾バー（今日分）を実値で更新
+        const maxVal = Math.max(...updated.map((d) => d.requests), totalOpen);
+        updated[updated.length - 1] = {
+          day: todayDayLabel,
+          requests: totalOpen,
+          color: '#22C55E',
+        };
+        setBarData(updated);
+        setTodayLabel(`${todayDayLabel}曜: ${totalOpen}件（最新取得値）`);
+      } catch {
+        // フォールバック: BASE_BAR_DATAをそのまま使用
+      }
+    };
+    fetchStats();
+  }, []);
+
+  const maxVal = Math.max(...barData.map((d) => d.requests), 160);
+
   return (
     <div ref={ref} aria-label="APIパフォーマンス統計">
       <div
@@ -38,7 +69,7 @@ export function PerformanceSection() {
           今週のリクエスト数推移
         </h3>
         <p style={{ fontSize: 13, color: '#64748B', margin: '0 0 24px' }}>
-          日曜: 147件（今週最多）
+          {todayLabel}
         </p>
         <div
           style={{
@@ -50,8 +81,8 @@ export function PerformanceSection() {
           role="img"
           aria-label="今週のAPIリクエスト数棒グラフ"
         >
-          {BAR_DATA.map((item) => {
-            const heightPct = (item.requests / MAX_VAL) * 100;
+          {barData.map((item) => {
+            const heightPct = (item.requests / maxVal) * 100;
             return (
               <div
                 key={item.day}
@@ -65,7 +96,7 @@ export function PerformanceSection() {
                     backgroundColor: item.color,
                     borderRadius: '4px 4px 0 0',
                     transition: 'height 1s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                    transitionDelay: `${BAR_DATA.indexOf(item) * 80}ms`,
+                    transitionDelay: `${barData.indexOf(item) * 80}ms`,
                   }}
                   aria-label={`${item.day}曜日: ${item.requests}リクエスト`}
                 />
@@ -85,7 +116,7 @@ export function PerformanceSection() {
         }}
       >
         {[
-          { label: '今日の新着物件数', value: '147件', icon: '#22C55E' },
+          { label: '今日の新着物件数', value: `${barData[barData.length - 1].requests}件`, icon: '#22C55E' },
           { label: '全国対応エリア', value: '47都道府県', icon: '#3B82F6' },
           { label: 'API応答速度', value: '平均85ms', icon: '#F59E0B' },
         ].map((item) => (

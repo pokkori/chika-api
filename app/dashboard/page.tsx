@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { UsageChart } from '@/components/UsageChart';
 
 interface UsageData {
@@ -15,12 +14,34 @@ interface DashboardData {
   key_prefix: string;
 }
 
+interface AuctionProperty {
+  id: string;
+  building_name?: string;
+  address?: string;
+  base_price?: number;
+  property_type?: string;
+}
+
 const PLAN_LABELS: Record<string, string> = {
   free: 'Free',
+  starter: 'Starter',
   basic: 'Basic',
   pro: 'Pro',
   enterprise: 'Enterprise',
 };
+
+const MOCK_PROPERTIES: AuctionProperty[] = [
+  { id: 'mock-1', building_name: '東京都渋谷区マンション', address: '東京都', base_price: 12500000, property_type: 'apartment' },
+  { id: 'mock-2', building_name: '大阪府堺市一戸建て', address: '大阪府', base_price: 6800000, property_type: 'building' },
+  { id: 'mock-3', building_name: '神奈川県横浜市土地', address: '神奈川県', base_price: 9200000, property_type: 'land' },
+];
+
+function formatPrice(price?: number): string {
+  if (!price) return '---';
+  if (price >= 100000000) return `${(price / 100000000).toFixed(1)}億円`;
+  if (price >= 10000) return `${Math.floor(price / 10000).toLocaleString()}万円`;
+  return `${price.toLocaleString()}円`;
+}
 
 export default function DashboardPage() {
   const [email, setEmail] = useState('');
@@ -29,7 +50,8 @@ export default function DashboardPage() {
   const [error, setError] = useState('');
   const [reissuing, setReissuing] = useState(false);
   const [newKey, setNewKey] = useState('');
-  const router = useRouter();
+  const [topProperties, setTopProperties] = useState<AuctionProperty[]>([]);
+  const [webhookCount, setWebhookCount] = useState<number | null>(null);
 
   const fetchUsage = async (userEmail: string) => {
     setLoading(true);
@@ -79,6 +101,50 @@ export default function DashboardPage() {
       setReissuing(false);
     }
   };
+
+  // 今日の新着物件TOP3を取得
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const res = await fetch('/api/v1/auctions?limit=3&status=open', {
+          headers: { 'X-API-Key': 'auction_demo' },
+        });
+        if (res.ok) {
+          const json = await res.json();
+          const items: AuctionProperty[] = json.items ?? [];
+          setTopProperties(items.length > 0 ? items : MOCK_PROPERTIES);
+        } else {
+          setTopProperties(MOCK_PROPERTIES);
+        }
+      } catch {
+        setTopProperties(MOCK_PROPERTIES);
+      }
+    };
+    fetchProperties();
+  }, []);
+
+  // Webhook登録数チェック
+  useEffect(() => {
+    if (!dashboardData) return;
+    const checkWebhooks = async () => {
+      try {
+        const res = await fetch('/api/v1/webhooks', {
+          headers: { 'X-API-Key': 'auction_demo' },
+        });
+        if (res.ok) {
+          const json = await res.json();
+          const count = Array.isArray(json.items) ? json.items.length : (Array.isArray(json) ? json.length : 0);
+          setWebhookCount(count);
+        } else {
+          // 401/403はAPIキー未設定ゆえ0扱い
+          setWebhookCount(0);
+        }
+      } catch {
+        setWebhookCount(0);
+      }
+    };
+    checkWebhooks();
+  }, [dashboardData]);
 
   const todayUsage = dashboardData?.usage?.find(
     (u) => u.date === new Date().toISOString().slice(0, 10)
@@ -176,7 +242,7 @@ export default function DashboardPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32, flexWrap: 'wrap', gap: 16 }}>
               <h1 style={{ fontSize: 28, fontWeight: 700, color: '#F8FAFC', margin: 0 }}>使用量ダッシュボード</h1>
               <button
-                onClick={() => { setDashboardData(null); setEmail(''); setNewKey(''); }}
+                onClick={() => { setDashboardData(null); setEmail(''); setNewKey(''); setWebhookCount(null); }}
                 aria-label="ダッシュボードからログアウト"
                 style={{
                   backgroundColor: 'transparent',
@@ -192,6 +258,52 @@ export default function DashboardPage() {
                 ログアウト
               </button>
             </div>
+
+            {/* Webhook未設定バナー */}
+            {webhookCount === 0 && (
+              <div
+                role="alert"
+                style={{
+                  backgroundColor: '#422006',
+                  border: '2px solid #F59E0B',
+                  borderRadius: 8,
+                  padding: '14px 20px',
+                  marginBottom: 24,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  gap: 12,
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M10 2a8 8 0 100 16A8 8 0 0010 2zm0 4v5m0 3h.01" stroke="#F59E0B" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: '#FCD34D' }}>
+                    新着物件の自動通知を設定しましょう
+                  </span>
+                </div>
+                <a
+                  href="/webhooks"
+                  aria-label="Webhook通知設定ページへ移動"
+                  style={{
+                    backgroundColor: '#F59E0B',
+                    color: '#0F172A',
+                    textDecoration: 'none',
+                    borderRadius: 6,
+                    padding: '8px 16px',
+                    fontSize: 13,
+                    fontWeight: 700,
+                    minHeight: 44,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  Webhookを設定する
+                </a>
+              </div>
+            )}
 
             {newKey && (
               <div
@@ -225,6 +337,76 @@ export default function DashboardPage() {
                 </div>
               ))}
             </div>
+
+            {/* 今日のお宝物件候補TOP3 */}
+            {topProperties.length > 0 && (
+              <div
+                style={{
+                  background: 'rgba(255,255,255,0.04)',
+                  backdropFilter: 'blur(12px)',
+                  WebkitBackdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: 12,
+                  padding: 24,
+                  marginBottom: 32,
+                }}
+              >
+                <h2 style={{ fontSize: 18, fontWeight: 600, color: '#F8FAFC', marginBottom: 4, margin: '0 0 4px' }}>
+                  今日のお宝物件候補
+                </h2>
+                <p style={{ fontSize: 13, color: '#64748B', marginBottom: 20 }}>
+                  現在公開中の競売物件から最新3件を表示しています
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
+                  {topProperties.map((prop, i) => (
+                    <div
+                      key={prop.id}
+                      style={{
+                        background: 'rgba(255,255,255,0.05)',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        borderRadius: 8,
+                        padding: 16,
+                      }}
+                      aria-label={`物件${i + 1}: ${prop.building_name ?? '物件名不明'}`}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                        <div
+                          style={{
+                            width: 24,
+                            height: 24,
+                            borderRadius: '50%',
+                            backgroundColor: i === 0 ? '#F59E0B' : i === 1 ? '#94A3B8' : '#CD7C2F',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: '#0F172A',
+                          }}
+                          aria-hidden="true"
+                        >
+                          {i + 1}
+                        </div>
+                        <span style={{ fontSize: 12, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          {prop.property_type === 'apartment' ? 'マンション' : prop.property_type === 'land' ? '土地' : prop.property_type === 'building' ? '一戸建て' : '物件'}
+                        </span>
+                      </div>
+                      <p style={{ fontSize: 15, fontWeight: 600, color: '#F8FAFC', margin: '0 0 8px', lineHeight: 1.4 }}>
+                        {prop.building_name ?? '物件名未登録'}
+                      </p>
+                      <p style={{ fontSize: 13, color: '#94A3B8', margin: '0 0 12px' }}>
+                        {prop.address ?? '所在地未登録'}
+                      </p>
+                      <p style={{ fontSize: 18, fontWeight: 700, color: '#22C55E', margin: 0 }}>
+                        {formatPrice(prop.base_price)}
+                        <span style={{ fontSize: 12, color: '#64748B', fontWeight: 400, marginLeft: 4 }}>売却基準額</span>
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Chart */}
             <div style={{ backgroundColor: '#1E293B', borderRadius: 12, padding: 24, border: '1px solid #334155', marginBottom: 32 }}>

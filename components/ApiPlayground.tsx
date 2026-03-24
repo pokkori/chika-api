@@ -280,7 +280,7 @@ export function ApiPlayground() {
           >
             {displayedResponse}
             {displayedResponse.length < response.length && (
-              <span style={{ display: 'inline-block', width: 8, height: 14, backgroundColor: '#F59E0B', marginLeft: 2, verticalAlign: 'text-bottom', animation: 'none' }} aria-hidden="true" />
+              <span style={{ display: 'inline-block', width: 8, height: 14, backgroundColor: '#F59E0B', marginLeft: 2, verticalAlign: 'text-bottom', animation: 'blink 1s step-end infinite' }} aria-hidden="true" />
             )}
           </pre>
         </div>
