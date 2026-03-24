@@ -7,10 +7,10 @@ import { StatsCounter } from '@/components/StatsCounter';
 import { PerformanceSection } from '@/components/PerformanceSection';
 
 const curlExample = `curl -H "X-API-Key: YOUR_API_KEY" \\
-  "https://auction-property-api.vercel.app/api/v1/auctions?prefecture=13&status=open"`;
+  "https://chika-api-livid.vercel.app/api/v1/auctions?prefecture=13&status=open"`;
 
 const SHARE_TEXT = encodeURIComponent(
-  '競売物件データAPI - 裁判所競売情報をAPIで取得。毎日自動更新の競売・訳あり物件データ #競売物件 #不動産投資 #API https://auction-property-api.vercel.app'
+  '競売物件データAPI - 裁判所競売情報をAPIで取得。毎日自動更新の競売・訳あり物件データ #競売物件 #不動産投資 #API https://chika-api-livid.vercel.app'
 );
 
 export default function HomePage() {
@@ -263,9 +263,14 @@ export default function HomePage() {
           ].map((f) => (
             <div
               key={f.title}
-              className="backdrop-blur-md bg-white/5 border border-white/10 shadow-lg rounded-2xl hover:-translate-y-1 transition-transform duration-300"
+              className="shadow-lg rounded-2xl hover:-translate-y-1 transition-transform duration-300"
               style={{
                 padding: 28,
+                background: 'rgba(255,255,255,0.08)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                borderRadius: 16,
               }}
             >
               <div style={{ marginBottom: 16 }}>{f.icon}</div>
@@ -294,8 +299,14 @@ export default function HomePage() {
           手動でBITを確認する時代は終わりました
         </p>
         <div
-          className="backdrop-blur-md bg-white/5 border border-white/10"
-          style={{ borderRadius: 16, overflow: 'hidden' }}
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: 16,
+            overflow: 'hidden',
+          }}
         >
           <table
             aria-label="競売物件データAPIとBITの機能比較表"
@@ -424,8 +435,15 @@ export default function HomePage() {
           ].map((t) => (
             <div
               key={t.name}
-              className="backdrop-blur-md bg-white/5 border border-white/10 shadow-lg rounded-2xl hover:-translate-y-1 transition-transform duration-300"
-              style={{ padding: 28 }}
+              className="shadow-lg rounded-2xl hover:-translate-y-1 transition-transform duration-300"
+              style={{
+                padding: 28,
+                background: 'rgba(255,255,255,0.08)',
+                backdropFilter: 'blur(12px)',
+                WebkitBackdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255,255,255,0.15)',
+                borderRadius: 16,
+              }}
             >
               {/* 引用符SVGアイコン */}
               <svg
@@ -502,7 +520,18 @@ export default function HomePage() {
         <p style={{ fontSize: 16, color: '#94A3B8', textAlign: 'center', marginBottom: 32 }}>
           APIキーを取得したらすぐに使えます
         </p>
-        <CopyableCode code={curlExample} language="bash" />
+        <div
+          style={{
+            background: 'rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            borderRadius: 16,
+            padding: '8px',
+          }}
+        >
+          <CopyableCode code={curlExample} language="bash" />
+        </div>
       </section>
 
       {/* Performance Section */}
@@ -653,8 +682,11 @@ export default function HomePage() {
 
         {/* 請求書払い案内 */}
         <div
-          className="backdrop-blur-sm bg-white/5 border border-white/10"
           style={{
+            background: 'rgba(255,255,255,0.08)',
+            backdropFilter: 'blur(12px)',
+            WebkitBackdropFilter: 'blur(12px)',
+            border: '1px solid rgba(255,255,255,0.15)',
             borderRadius: 16,
             padding: '24px 28px',
             marginTop: 32,
@@ -761,9 +793,12 @@ export default function HomePage() {
         ].map(({ q, a }) => (
           <details
             key={q}
-            className="backdrop-blur-md bg-white/5 border border-white/10"
             style={{
-              borderRadius: 8,
+              background: 'rgba(255,255,255,0.08)',
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              borderRadius: 16,
               marginBottom: 12,
               overflow: 'hidden',
             }}
