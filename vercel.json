@@ -3,5 +3,11 @@
   "buildCommand": "next build",
   "devCommand": "next dev",
   "installCommand": "npm install --legacy-peer-deps",
-  "name": "chika-api"
+  "name": "auction-property-api",
+  "crons": [
+    {
+      "path": "/api/cron/crawl",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }

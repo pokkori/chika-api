@@ -19,8 +19,8 @@ export async function verifyApiKey(apiKey: string | null): Promise<AuthResult> {
     return { valid: false, error: 'APIキーが必要です。X-API-Keyヘッダーを設定してください。' };
   }
 
-  if (!apiKey.startsWith('chika_')) {
-    return { valid: false, error: 'APIキーの形式が不正です。ChikaAPIのAPIキーは"chika_"で始まります。' };
+  if (!apiKey.startsWith('auction_')) {
+    return { valid: false, error: 'APIキーの形式が不正です。競売物件データAPIのAPIキーは"auction_"で始まります。' };
   }
 
   // Supabase未設定の場合はモックレスポンスを返す（開発環境向け）
@@ -42,7 +42,7 @@ export async function verifyApiKey(apiKey: string | null): Promise<AuthResult> {
     .single();
 
   if (error || !data) {
-    return { valid: false, error: '無効なAPIキーです。ダッシュボードで確認してください: https://chika-api.vercel.app/dashboard' };
+    return { valid: false, error: '無効なAPIキーです。ダッシュボードで確認してください: https://auction-property-api.vercel.app/dashboard' };
   }
   if (!data.is_active) {
     return { valid: false, error: 'このAPIキーは無効化されています。' };

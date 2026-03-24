@@ -3,17 +3,21 @@ import { CopyableCode } from '@/components/CopyableCode';
 import { StreakBadge } from '@/components/StreakBadge';
 
 const curlExample = `curl -H "X-API-Key: YOUR_API_KEY" \\
-  "https://chika-api.vercel.app/api/v1/land-price?prefecture=13&city=13101&year=2024"`;
+  "https://auction-property-api.vercel.app/api/v1/auctions?prefecture=13&status=open"`;
 
 const SHARE_TEXT = encodeURIComponent(
-  'ChikaAPI - 地価データREST API。国土交通省の地価データをシンプルなAPIで取得 #ChikaAPI #不動産テック #API https://chika-api.vercel.app'
+  '競売物件データAPI - 裁判所競売情報をAPIで取得。毎日自動更新の競売・訳あり物件データ #競売物件 #不動産投資 #API https://auction-property-api.vercel.app'
 );
 
 export default function HomePage() {
   return (
-    <main style={{ backgroundColor: '#0F172A', minHeight: '100vh', color: '#F8FAFC' }}>
+    <main
+      style={{ backgroundColor: '#0F172A', minHeight: '100vh', color: '#F8FAFC' }}
+      aria-label="競売物件データAPI トップページ"
+    >
       {/* Hero */}
       <section
+        aria-label="サービス紹介"
         style={{
           maxWidth: 1100,
           margin: '0 auto',
@@ -24,7 +28,7 @@ export default function HomePage() {
         <div
           className="inline-block backdrop-blur-sm bg-white/10 border border-white/20 shadow-lg rounded-2xl"
           style={{
-            color: '#60A5FA',
+            color: '#F59E0B',
             padding: '4px 16px',
             fontSize: 14,
             marginBottom: 24,
@@ -41,10 +45,10 @@ export default function HomePage() {
             color: '#F8FAFC',
           }}
         >
-          ChikaAPI
-          <StreakBadge streakKey="chika_api" />
+          競売物件データAPI
+          <StreakBadge streakKey="auction_api" />
           <br />
-          <span style={{ color: '#3B82F6' }}>地価データREST API</span>
+          <span style={{ color: '#F59E0B' }}>裁判所競売情報を、APIで。</span>
         </h1>
         <p
           style={{
@@ -55,21 +59,20 @@ export default function HomePage() {
             lineHeight: 1.7,
           }}
         >
-          国土交通省の公示地価・路線価・基準地価データを
-          シンプルなREST APIで即時取得。
-          不動産テック・フィンテック開発に最適。
+          裁判所の競売物件・訳あり激安物件データを毎日自動収集。
+          REST APIで即時取得。不動産投資家・テック企業向け。
         </p>
         <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
           <a
             href="/api/auth/register"
-            aria-label="無料でChikaAPIを始める"
+            aria-label="無料で競売物件データAPIを始める"
             style={{
-              backgroundColor: '#3B82F6',
-              color: '#F8FAFC',
+              backgroundColor: '#F59E0B',
+              color: '#0F172A',
               padding: '14px 32px',
               borderRadius: 8,
               fontSize: 16,
-              fontWeight: 600,
+              fontWeight: 700,
               textDecoration: 'none',
               display: 'inline-flex',
               alignItems: 'center',
@@ -101,7 +104,7 @@ export default function HomePage() {
             href={`https://twitter.com/intent/tweet?text=${SHARE_TEXT}`}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="ChikaAPIをXでシェアする"
+            aria-label="競売物件データAPIをXでシェアする"
             className="bg-black text-white rounded-lg px-4 py-2"
             style={{
               display: 'inline-flex',
@@ -123,6 +126,7 @@ export default function HomePage() {
 
       {/* Features */}
       <section
+        aria-label="サービスの特徴"
         style={{
           maxWidth: 1100,
           margin: '0 auto',
@@ -132,7 +136,7 @@ export default function HomePage() {
         <h2
           style={{ fontSize: 28, fontWeight: 700, textAlign: 'center', marginBottom: 48, color: '#F8FAFC' }}
         >
-          ChikaAPIの特徴
+          競売物件データAPIの特徴
         </h2>
         <div
           style={{
@@ -145,33 +149,33 @@ export default function HomePage() {
             {
               icon: (
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                  <rect width="32" height="32" rx="8" fill="#1E3A5F" />
-                  <path d="M8 16h16M16 8v16" stroke="#3B82F6" strokeWidth="2.5" strokeLinecap="round" />
+                  <rect width="32" height="32" rx="8" fill="#1E293B" />
+                  <path d="M8 22l4-8 4 4 4-12 4 8" stroke="#F59E0B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               ),
-              title: '全国30万地点',
-              desc: '国土交通省の公示地価・基準地価・路線価を網羅。都市部から地方まで全国対応。',
+              title: '毎日自動更新',
+              desc: 'Vercel Cronで毎日午前9時に裁判所公示情報をクロール。常に最新の競売物件データを提供。',
             },
             {
               icon: (
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                  <rect width="32" height="32" rx="8" fill="#1E3A5F" />
-                  <circle cx="16" cy="16" r="6" stroke="#3B82F6" strokeWidth="2.5" />
-                  <path d="M16 8v3M16 21v3M8 16h3M21 16h3" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" />
+                  <rect width="32" height="32" rx="8" fill="#1E293B" />
+                  <circle cx="16" cy="16" r="6" stroke="#F59E0B" strokeWidth="2.5" />
+                  <path d="M16 8v3M16 21v3M8 16h3M21 16h3" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               ),
-              title: 'リアルタイム取得',
-              desc: 'Redisキャッシュで平均レスポンス200ms以内。最新の地価データをスピーディに取得。',
+              title: '47都道府県対応',
+              desc: '全国の地方裁判所・支部の競売物件情報を網羅。都市部から地方の掘り出し物件まで一括取得。',
             },
             {
               icon: (
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                  <rect width="32" height="32" rx="8" fill="#1E3A5F" />
-                  <path d="M8 24L12 16L16 20L20 12L24 16" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <rect width="32" height="32" rx="8" fill="#1E293B" />
+                  <path d="M10 22V14M16 22V10M22 22V16" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" />
                 </svg>
               ),
-              title: '99.9% SLA',
-              desc: 'Vercel Edge + Upstash Redisによる高可用性。本番環境のサービスに安心して組み込める。',
+              title: '構造化データ',
+              desc: '裁判所HTML→構造化JSONに変換済み。物件種別・面積・売却基準額・入札期限を即座に取得可能。',
             },
           ].map((f) => (
             <div
@@ -191,6 +195,7 @@ export default function HomePage() {
 
       {/* Code Sample */}
       <section
+        aria-label="APIサンプルコード"
         style={{
           maxWidth: 1100,
           margin: '0 auto',
@@ -200,7 +205,7 @@ export default function HomePage() {
         <h2
           style={{ fontSize: 28, fontWeight: 700, textAlign: 'center', marginBottom: 16, color: '#F8FAFC' }}
         >
-          3行で地価データを取得
+          3行で競売物件データを取得
         </h2>
         <p style={{ fontSize: 16, color: '#94A3B8', textAlign: 'center', marginBottom: 32 }}>
           APIキーを取得したらすぐに使えます
@@ -210,7 +215,8 @@ export default function HomePage() {
 
       {/* Pricing */}
       <section
-        id="pricing"
+        id="plans"
+        aria-label="料金プラン一覧"
         style={{
           maxWidth: 1100,
           margin: '0 auto',
@@ -240,6 +246,7 @@ export default function HomePage() {
 
       {/* FAQ */}
       <section
+        aria-label="よくある質問"
         style={{
           maxWidth: 700,
           margin: '0 auto',
@@ -258,11 +265,15 @@ export default function HomePage() {
           },
           {
             q: 'データの更新頻度はどのくらいですか？',
-            a: '国土交通省の公示地価は年1回（1月1日時点）、基準地価は年1回（7月1日時点）更新されます。APIのキャッシュは24時間です。',
+            a: '毎日午前9時（JST）にVercel Cronで自動クロールを実行します。新規物件・ステータス変更（売却済み・取消）を反映します。',
           },
           {
             q: '商用利用は可能ですか？',
             a: 'はい。Basicプラン以上で商用利用が可能です。Freeプランは個人・試作目的のみとなります。',
+          },
+          {
+            q: 'Webhook通知はどのプランから使えますか？',
+            a: 'ProプランおよびEnterpriseプランでご利用いただけます。指定条件（都道府県・物件種別・価格帯）に合致する新着物件を自動通知します。',
           },
           {
             q: 'KOMOJUでの決済はいつ開始しますか？',
@@ -308,6 +319,7 @@ export default function HomePage() {
 
       {/* Share Section */}
       <section
+        aria-label="シェアセクション"
         style={{
           maxWidth: 700,
           margin: '0 auto',
@@ -316,13 +328,13 @@ export default function HomePage() {
         }}
       >
         <p style={{ fontSize: 16, color: '#94A3B8', marginBottom: 16 }}>
-          ChikaAPIを知人・同僚にシェアしよう
+          競売物件データAPIを知人・同僚にシェアしよう
         </p>
         <a
           href={`https://twitter.com/intent/tweet?text=${SHARE_TEXT}`}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="ChikaAPIをXでシェアする"
+          aria-label="競売物件データAPIをXでシェアする"
           className="bg-black text-white rounded-lg px-4 py-2"
           style={{
             display: 'inline-flex',
@@ -343,39 +355,47 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer
+        aria-label="フッター"
         style={{
           borderTop: '1px solid #1E293B',
           padding: '32px 24px',
           textAlign: 'center',
         }}
       >
-        <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 16 }}>
-          <a
-            href="/docs"
-            aria-label="APIドキュメントページへ"
-            style={{ color: '#94A3B8', textDecoration: 'none', fontSize: 14, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
-          >
-            APIドキュメント
-          </a>
-          <a
-            href="/dashboard"
-            aria-label="ダッシュボードページへ"
-            style={{ color: '#94A3B8', textDecoration: 'none', fontSize: 14, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
-          >
-            ダッシュボード
-          </a>
-          <a
-            href="https://github.com"
-            aria-label="GitHubリポジトリへ（外部リンク）"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: '#94A3B8', textDecoration: 'none', fontSize: 14, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
-          >
-            GitHub
-          </a>
-        </div>
+        <nav aria-label="フッターナビゲーション">
+          <div style={{ display: 'flex', gap: 24, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 16 }}>
+            <a
+              href="/docs"
+              aria-label="APIドキュメントページへ"
+              style={{ color: '#94A3B8', textDecoration: 'none', fontSize: 14, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
+            >
+              APIドキュメント
+            </a>
+            <a
+              href="/dashboard"
+              aria-label="ダッシュボードページへ"
+              style={{ color: '#94A3B8', textDecoration: 'none', fontSize: 14, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
+            >
+              ダッシュボード
+            </a>
+            <a
+              href="/legal"
+              aria-label="特商法表記ページへ"
+              style={{ color: '#94A3B8', textDecoration: 'none', fontSize: 14, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
+            >
+              特商法表記
+            </a>
+            <a
+              href="/privacy"
+              aria-label="プライバシーポリシーページへ"
+              style={{ color: '#94A3B8', textDecoration: 'none', fontSize: 14, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
+            >
+              プライバシーポリシー
+            </a>
+          </div>
+        </nav>
         <p style={{ color: '#475569', fontSize: 12, margin: 0 }}>
-          &copy; 2024 ChikaAPI. データ出典: 国土交通省 不動産情報ライブラリ
+          &copy; 2024 競売物件データAPI. 裁判所公示情報を利用。
         </p>
       </footer>
     </main>

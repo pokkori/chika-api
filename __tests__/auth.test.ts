@@ -13,11 +13,11 @@ jest.mock('@supabase/supabase-js', () => ({
 }));
 
 describe('generateApiKey', () => {
-  it('chika_プレフィックスで始まる32文字のランダム部を持つキーを生成する', () => {
+  it('auction_プレフィックスで始まる32文字のランダム部を持つキーを生成する', () => {
     const { raw, hashed, prefix } = generateApiKey();
-    expect(raw).toMatch(/^chika_[A-Za-z0-9]{32}$/);
+    expect(raw).toMatch(/^auction_[A-Za-z0-9]{32}$/);
     expect(hashed).toBe(createHash('sha256').update(raw).digest('hex'));
-    expect(prefix).toBe(raw.slice(0, 12));
+    expect(prefix).toBe(raw.slice(0, 14));
   });
 
   it('hashed は64文字のSHA-256ハッシュである', () => {
@@ -33,10 +33,10 @@ describe('generateApiKey', () => {
     expect(a.hashed).not.toBe(b.hashed);
   });
 
-  it('prefix は raw の先頭12文字である', () => {
+  it('prefix は raw の先頭14文字である', () => {
     const { raw, prefix } = generateApiKey();
-    expect(prefix).toBe(raw.slice(0, 12));
-    expect(prefix.startsWith('chika_')).toBe(true);
+    expect(prefix).toBe(raw.slice(0, 14));
+    expect(prefix.startsWith('auction_')).toBe(true);
   });
 });
 
@@ -47,8 +47,14 @@ describe('verifyApiKey', () => {
     expect(result.error).toContain('APIキーが必要です');
   });
 
-  it('chika_で始まらないキーでエラーを返す', async () => {
+  it('auction_で始まらないキーでエラーを返す', async () => {
     const result = await verifyApiKey('sk_invalid_key');
+    expect(result.valid).toBe(false);
+    expect(result.error).toContain('形式が不正');
+  });
+
+  it('chika_プレフィックスのキーでエラーを返す', async () => {
+    const result = await verifyApiKey('chika_invalidkey12345678901234567890');
     expect(result.valid).toBe(false);
     expect(result.error).toContain('形式が不正');
   });
@@ -57,5 +63,12 @@ describe('verifyApiKey', () => {
     const result = await verifyApiKey('');
     expect(result.valid).toBe(false);
     expect(result.error).toContain('APIキーが必要です');
+  });
+
+  it('auction_プレフィックスで始まるキーはSupabase未設定時にモック成功を返す', async () => {
+    delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const result = await verifyApiKey('auction_validkey1234567890123456');
+    expect(result.valid).toBe(true);
+    expect(result.plan).toBe('free');
   });
 });
