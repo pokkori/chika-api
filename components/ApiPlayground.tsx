@@ -1,45 +1,37 @@
 'use client';
 import { useState } from 'react';
 
-interface ApiPlaygroundProps {
-  defaultEndpoint?: string;
-}
-
 const ENDPOINTS = [
   {
-    label: '地価検索 GET /api/v1/land-price',
-    value: '/api/v1/land-price',
+    label: '競売物件一覧 GET /api/v1/auctions',
+    value: '/api/v1/auctions',
     params: [
-      { name: 'prefecture', label: '都道府県コード', placeholder: '13（東京）', required: true },
-      { name: 'city', label: '市区町村コード', placeholder: '13101（千代田区）', required: false },
-      { name: 'year', label: '年', placeholder: '2024', required: false },
-      { name: 'use_category', label: '用途区分', placeholder: '住宅地', required: false },
-      { name: 'limit', label: '件数上限', placeholder: '100', required: false },
+      { name: 'prefecture', label: '都道府県コード', placeholder: '13（東京都）', required: false },
+      { name: 'category', label: '物件種別', placeholder: 'apartment / land / building / farm', required: false },
+      { name: 'min_price', label: '最低売却基準額（円）', placeholder: '5000000', required: false },
+      { name: 'max_price', label: '最高売却基準額（円）', placeholder: '50000000', required: false },
+      { name: 'status', label: 'ステータス', placeholder: 'open / sold / cancelled', required: false },
+      { name: 'limit', label: '取得件数（最大100）', placeholder: '20', required: false },
+      { name: 'offset', label: 'ページング開始位置', placeholder: '0', required: false },
     ],
   },
   {
-    label: '周辺地価推移 GET /api/v1/land-price/trend',
-    value: '/api/v1/land-price/trend',
-    params: [
-      { name: 'lat', label: '緯度', placeholder: '35.6762', required: true },
-      { name: 'lon', label: '経度', placeholder: '139.6503', required: true },
-      { name: 'radius', label: '半径（m）', placeholder: '1000', required: false },
-      { name: 'years', label: '取得年数', placeholder: '5', required: false },
-    ],
+    label: '統計情報 GET /api/v1/auctions/stats（認証不要）',
+    value: '/api/v1/auctions/stats',
+    params: [],
   },
   {
-    label: '路線価 GET /api/v1/route-price',
-    value: '/api/v1/route-price',
+    label: '競売物件詳細 GET /api/v1/auctions/{id}',
+    value: '/api/v1/auctions/[id]',
     params: [
-      { name: 'prefecture', label: '都道府県コード', placeholder: '13', required: true },
-      { name: 'line', label: '路線名', placeholder: '山手線', required: true },
+      { name: 'id', label: '物件ID', placeholder: 'court_13_R6_ke_1234', required: true },
     ],
   },
 ];
 
-export function ApiPlayground({ defaultEndpoint = '/api/v1/land-price' }: ApiPlaygroundProps) {
+export function ApiPlayground() {
   const [apiKey, setApiKey] = useState('');
-  const [selectedEndpoint, setSelectedEndpoint] = useState(defaultEndpoint);
+  const [selectedEndpoint, setSelectedEndpoint] = useState('/api/v1/auctions');
   const [params, setParams] = useState<Record<string, string>>({});
   const [response, setResponse] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -48,25 +40,34 @@ export function ApiPlayground({ defaultEndpoint = '/api/v1/land-price' }: ApiPla
   const endpoint = ENDPOINTS.find((e) => e.value === selectedEndpoint) ?? ENDPOINTS[0];
 
   const buildUrl = () => {
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://chika-api.vercel.app';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://auction-property-api.vercel.app';
+    // 詳細エンドポイントはidをパスに埋め込む
+    if (selectedEndpoint === '/api/v1/auctions/[id]') {
+      const id = params['id'] || 'court_13_R6_ke_1234';
+      return `${base}/api/v1/auctions/${encodeURIComponent(id)}`;
+    }
     const url = new URL(`${base}${selectedEndpoint}`);
     Object.entries(params).forEach(([k, v]) => {
-      if (v) url.searchParams.set(k, v);
+      if (v && k !== 'id') url.searchParams.set(k, v);
     });
     return url.toString();
   };
 
-  const curlCommand = `curl -H "X-API-Key: ${apiKey || 'YOUR_API_KEY'}" \\
-  "${buildUrl()}"`;
+  const curlCommand =
+    selectedEndpoint === '/api/v1/auctions/stats'
+      ? `curl "${buildUrl()}"`
+      : `curl -H "X-API-Key: ${apiKey || 'YOUR_API_KEY'}" \\\n  "${buildUrl()}"`;
 
   const handleExecute = async () => {
     setLoading(true);
     setResponse('');
     setStatusCode(null);
     try {
-      const res = await fetch(buildUrl(), {
-        headers: { 'X-API-Key': apiKey },
-      });
+      const headers: Record<string, string> = {};
+      if (selectedEndpoint !== '/api/v1/auctions/stats') {
+        headers['X-API-Key'] = apiKey;
+      }
+      const res = await fetch(buildUrl(), { headers });
       setStatusCode(res.status);
       const json = await res.json();
       setResponse(JSON.stringify(json, null, 2));
@@ -78,9 +79,10 @@ export function ApiPlayground({ defaultEndpoint = '/api/v1/land-price' }: ApiPla
   };
 
   return (
-    <div style={{ backgroundColor: '#1E293B', borderRadius: 12, padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: '#F8FAFC', margin: 0 }}>API Playground</h2>
-
+    <div
+      className="backdrop-blur-sm bg-white/5 border border-white/10 shadow-lg rounded-2xl"
+      style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}
+    >
       <div>
         <label htmlFor="playground-endpoint" style={{ fontSize: 14, color: '#94A3B8', display: 'block', marginBottom: 4 }}>
           エンドポイント
@@ -107,29 +109,31 @@ export function ApiPlayground({ defaultEndpoint = '/api/v1/land-price' }: ApiPla
         </select>
       </div>
 
-      <div>
-        <label htmlFor="playground-apikey" style={{ fontSize: 14, color: '#94A3B8', display: 'block', marginBottom: 4 }}>
-          APIキー
-        </label>
-        <input
-          id="playground-apikey"
-          type="text"
-          aria-label="X-API-Keyヘッダーに使用するAPIキーを入力"
-          placeholder="chika_xxxxxxxx"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          style={{
-            width: '100%',
-            backgroundColor: '#0F172A',
-            color: '#F8FAFC',
-            border: '1px solid #334155',
-            borderRadius: 6,
-            padding: '10px 12px',
-            fontSize: 14,
-            minHeight: 44,
-          }}
-        />
-      </div>
+      {selectedEndpoint !== '/api/v1/auctions/stats' && (
+        <div>
+          <label htmlFor="playground-apikey" style={{ fontSize: 14, color: '#94A3B8', display: 'block', marginBottom: 4 }}>
+            APIキー
+          </label>
+          <input
+            id="playground-apikey"
+            type="text"
+            aria-label="X-API-Keyヘッダーに使用するAPIキーを入力"
+            placeholder="auction_xxxxxxxx"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            style={{
+              width: '100%',
+              backgroundColor: '#0F172A',
+              color: '#F8FAFC',
+              border: '1px solid #334155',
+              borderRadius: 6,
+              padding: '10px 12px',
+              fontSize: 14,
+              minHeight: 44,
+            }}
+          />
+        </div>
+      )}
 
       {endpoint.params.map((param) => (
         <div key={param.name}>
@@ -170,10 +174,10 @@ export function ApiPlayground({ defaultEndpoint = '/api/v1/land-price' }: ApiPla
       <button
         onClick={handleExecute}
         disabled={loading}
-        aria-label="APIリクエストを実行"
+        aria-label="APIリクエストを実行する"
         style={{
-          backgroundColor: loading ? '#334155' : '#3B82F6',
-          color: '#F8FAFC',
+          backgroundColor: loading ? '#334155' : '#F59E0B',
+          color: loading ? '#F8FAFC' : '#0F172A',
           border: 'none',
           borderRadius: 8,
           padding: '12px 24px',

@@ -90,10 +90,10 @@ export default function DashboardPage() {
       <header style={{ backgroundColor: '#1E293B', borderBottom: '1px solid #334155', padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 24 }}>
         <a
           href="/"
-          aria-label="トップページへ戻る"
-          style={{ color: '#3B82F6', textDecoration: 'none', fontWeight: 700, fontSize: 18, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
+          aria-label="競売物件データAPI トップページへ戻る"
+          style={{ color: '#F59E0B', textDecoration: 'none', fontWeight: 700, fontSize: 18, minHeight: 44, display: 'inline-flex', alignItems: 'center' }}
         >
-          ChikaAPI
+          競売物件データAPI
         </a>
         <span style={{ color: '#475569', fontSize: 14 }}>/</span>
         <span style={{ color: '#F8FAFC', fontSize: 14 }}>ダッシュボード</span>
