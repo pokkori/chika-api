@@ -331,7 +331,7 @@ export default function DashboardPage() {
                 { label: '本日の使用量', value: `${todayUsage.toLocaleString()} req` },
                 { label: 'APIキー', value: dashboardData.key_prefix },
               ].map(({ label, value }) => (
-                <div key={label} style={{ backgroundColor: '#1E293B', borderRadius: 8, padding: 20, border: '1px solid #334155' }}>
+                <div key={label} className="backdrop-blur-md bg-white/5 border border-white/10" style={{ borderRadius: 8, padding: 20 }}>
                   <p style={{ fontSize: 12, color: '#94A3B8', margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</p>
                   <p style={{ fontSize: 18, fontWeight: 700, color: '#F8FAFC', margin: 0, wordBreak: 'break-all' }}>{value}</p>
                 </div>

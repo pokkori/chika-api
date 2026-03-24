@@ -276,6 +276,108 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* BIT Comparison */}
+      <section
+        aria-label="競売物件データAPI vs BIT 比較表"
+        style={{
+          maxWidth: 1100,
+          margin: '0 auto',
+          padding: '60px 24px',
+        }}
+      >
+        <h2
+          style={{ fontSize: 28, fontWeight: 700, textAlign: 'center', marginBottom: 16, color: '#F8FAFC' }}
+        >
+          競売物件データAPI vs BIT（裁判所Webサイト）
+        </h2>
+        <p style={{ fontSize: 16, color: '#94A3B8', textAlign: 'center', marginBottom: 40 }}>
+          手動でBITを確認する時代は終わりました
+        </p>
+        <div
+          className="backdrop-blur-md bg-white/5 border border-white/10"
+          style={{ borderRadius: 16, overflow: 'hidden' }}
+        >
+          <table
+            aria-label="競売物件データAPIとBITの機能比較表"
+            style={{ width: '100%', borderCollapse: 'collapse' }}
+          >
+            <thead>
+              <tr style={{ backgroundColor: 'rgba(245,158,11,0.08)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                <th style={{ padding: '16px 20px', textAlign: 'left', fontSize: 14, color: '#94A3B8', fontWeight: 600 }}>
+                  比較項目
+                </th>
+                <th style={{ padding: '16px 20px', textAlign: 'center', fontSize: 15, color: '#F59E0B', fontWeight: 700 }}>
+                  競売物件データAPI
+                </th>
+                <th style={{ padding: '16px 20px', textAlign: 'center', fontSize: 14, color: '#64748B', fontWeight: 600 }}>
+                  BIT（裁判所Webサイト）
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { item: 'データ形式', api: '構造化JSON（即時パース可）', bit: 'HTML（スクレイピング必要）' },
+                { item: 'API対応', api: 'REST API（全エンドポイント）', bit: 'なし' },
+                { item: 'Webhook通知', api: '条件フィルタ付き自動通知', bit: 'なし' },
+                { item: 'Sandboxモード', api: 'デモAPIキーで即試用', bit: 'なし' },
+                { item: '自動更新', api: '毎日午前9時に全国自動クロール', bit: '手動確認が必要' },
+                { item: '47都道府県', api: '全国一括取得可', bit: '都道府県ごとに個別アクセス' },
+                { item: 'フィルタリング', api: '価格帯・物件種別・地域で絞込み', bit: '絞込機能が限定的' },
+              ].map(({ item, api, bit }, i) => (
+                <tr
+                  key={item}
+                  style={{
+                    borderBottom: i < 6 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                    backgroundColor: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)',
+                  }}
+                >
+                  <td style={{ padding: '14px 20px', fontSize: 14, color: '#CBD5E1', fontWeight: 600 }}>
+                    {item}
+                  </td>
+                  <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, color: '#22C55E' }}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M3 8l4 4 6-7" stroke="#22C55E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      {api}
+                    </span>
+                  </td>
+                  <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, color: '#64748B' }}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M4 4l8 8M12 4l-8 8" stroke="#64748B" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                      {bit}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div style={{ textAlign: 'center', marginTop: 32 }}>
+          <a
+            href="/api/auth/register"
+            aria-label="無料で競売物件データAPIを始める"
+            className="hover:scale-105 hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all duration-300"
+            style={{
+              backgroundColor: '#F59E0B',
+              color: '#0F172A',
+              padding: '14px 32px',
+              borderRadius: 8,
+              fontSize: 16,
+              fontWeight: 700,
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              minHeight: 44,
+            }}
+          >
+            無料で始める
+          </a>
+        </div>
+      </section>
+
       {/* Code Sample */}
       <section
         aria-label="APIサンプルコード"
@@ -515,7 +617,7 @@ export default function HomePage() {
           },
           {
             q: 'データの更新頻度はどのくらいですか？',
-            a: '毎日午前9時（JST）にVercel Cronで自動クロールを実行します。新規物件・ステータス変更（売却済み・取消）を反映します。',
+            a: '裁判所公示情報に基づき毎日自動更新されます。更新時刻は日本時間午前9時です。',
           },
           {
             q: '商用利用は可能ですか？',
@@ -523,11 +625,31 @@ export default function HomePage() {
           },
           {
             q: 'Webhook通知はどのプランから使えますか？',
-            a: 'ProプランおよびEnterpriseプランでご利用いただけます。指定条件（都道府県・物件種別・価格帯）に合致する新着物件を自動通知します。',
+            a: 'BasicプランおよびProプラン以上でご利用いただけます。指定条件（都道府県・物件種別・価格帯）に合致する新着物件を自動通知します。',
+          },
+          {
+            q: '画像データは含まれますか？',
+            a: 'はい、物件写真URLが含まれます（画像ファイル自体はBITリンクです）。',
+          },
+          {
+            q: '稼働率（SLA）はどのくらいですか？',
+            a: '99.5%以上のアップタイムを保証しています。Businessプラン以上ではSLA証明書を発行します。',
+          },
+          {
+            q: '解約はいつでも可能ですか？',
+            a: 'はい、月次契約のため翌月に解約可能です。年間契約は期間中の解約は対応しておりません。',
+          },
+          {
+            q: '無料トライアルはありますか？',
+            a: 'Sandboxモード（デモAPIキー）で制限付き無料試用が可能です。本番APIは7日間無料トライアル付きです。',
           },
           {
             q: 'KOMOJUでの決済はいつ開始しますか？',
             a: '現在KOMOJU審査中です。審査通過後にBasic/Pro/Enterpriseプランのお申し込みが可能になります。',
+          },
+          {
+            q: '請求書払い（インボイス）には対応していますか？',
+            a: 'はい。法人・官公庁向けに請求書払いを提供しています。/invoice ページからお申し込みください。インボイス登録番号の発行にも対応しています。',
           },
         ].map(({ q, a }) => (
           <details

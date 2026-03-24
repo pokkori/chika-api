@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     images: ['/og.png'],
   },
   robots: { index: true, follow: true },
-  keywords: ['競売物件', 'API', '不動産投資', '裁判所競売', '訳あり物件', '競売情報', 'REST API'],
+  keywords: ['競売物件', 'API', '不動産投資', '裁判所競売', '訳あり物件', '競売情報', 'REST API', '裁判所入札情報API', '競売物件JSON', '不動産競売 自動化', '競売データAPI'],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -104,10 +104,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 },
                 {
                   '@type': 'Question',
-                  name: 'データの更新頻度は？',
+                  name: 'データの更新頻度はどのくらいですか？',
                   acceptedAnswer: {
                     '@type': 'Answer',
-                    text: '毎日午前9時（JST）にVercel Cronで自動クロールを実行し、全国の最新競売公示情報を取得・更新します。',
+                    text: '裁判所公示情報に基づき毎日自動更新されます。更新時刻は日本時間午前9時です。',
                   },
                 },
                 {
@@ -124,6 +124,46 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   acceptedAnswer: {
                     '@type': 'Answer',
                     text: 'はい。Basicプラン以上で商用利用が可能です。Freeプランは個人・試作目的のみとなります。',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: '画像データは含まれますか？',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'はい、物件写真URLが含まれます（画像ファイル自体はBITリンクです）。',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: '稼働率（SLA）はどのくらいですか？',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: '99.5%以上のアップタイムを保証しています。Businessプラン以上ではSLA証明書を発行します。',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: '解約はいつでも可能ですか？',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'はい、月次契約のため翌月に解約可能です。年間契約は期間中の解約は対応しておりません。',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: '無料トライアルはありますか？',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Sandboxモード（デモAPIキー）で制限付き無料試用が可能です。本番APIは7日間無料トライアル付きです。',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Webhook通知はどのプランから使えますか？',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'BasicプランおよびProプラン以上でご利用いただけます。指定条件（都道府県・物件種別・価格帯）に合致する新着物件を自動通知します。',
                   },
                 },
               ],

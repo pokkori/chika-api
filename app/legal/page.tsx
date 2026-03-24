@@ -30,7 +30,7 @@ export default function Legal() {
           <tr>
             <td style={{ padding: '8px', border: '1px solid #334155', fontWeight: 'bold' }}>料金</td>
             <td style={{ padding: '8px', border: '1px solid #334155' }}>
-              Freeプラン: 0円 / Basicプラン: 月額9,800円 / Proプラン: 月額29,800円 / Enterpriseプラン: 月額49,800円
+              Starterプラン: 月額2,980円 / Basicプラン: 月額9,800円 / Proプラン: 月額29,800円 / Businessプラン: 月額59,800円 / Enterpriseプラン: 月額98,000円〜
             </td>
           </tr>
           <tr>

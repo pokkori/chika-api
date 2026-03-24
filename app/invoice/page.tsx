@@ -2,8 +2,11 @@
 import { useState } from 'react';
 
 const PLAN_OPTIONS = [
-  { value: 'standard', label: 'スタンダード - 月額 ¥9,800（10,000リクエスト/日）' },
-  { value: 'enterprise', label: 'エンタープライズ - 月額 ¥49,800（無制限リクエスト）' },
+  { value: 'starter', label: 'Starter - 月額 ¥2,980（1,000リクエスト/日）' },
+  { value: 'basic', label: 'Basic - 月額 ¥9,800（10,000リクエスト/日）' },
+  { value: 'pro', label: 'Pro - 月額 ¥29,800（50,000リクエスト/日）' },
+  { value: 'business', label: 'Business - 月額 ¥59,800（200,000リクエスト/日）' },
+  { value: 'enterprise', label: 'Enterprise - 月額 ¥98,000〜（無制限リクエスト）' },
 ];
 
 type FormState = {
@@ -425,15 +428,30 @@ export default function InvoicePage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
             {[
               {
-                name: 'スタンダード',
+                name: 'Starter',
+                price: '¥2,980/月',
+                features: ['1,000リクエスト/日', '47都道府県対応', 'メールサポート', '個人利用可'],
+              },
+              {
+                name: 'Basic',
                 price: '¥9,800/月',
                 features: ['10,000リクエスト/日', '47都道府県対応', 'メールサポート', '商用利用可', 'Webhook通知（5件まで）'],
               },
               {
-                name: 'エンタープライズ',
-                price: '¥49,800/月',
-                features: ['無制限リクエスト', '47都道府県対応', '専任サポート', '商用利用可', 'Webhook通知（無制限）', 'SLA 99.9%保証', 'カスタムデータフィールド'],
+                name: 'Pro',
+                price: '¥29,800/月',
+                features: ['50,000リクエスト/日', '47都道府県対応', '優先サポート', '商用利用可', 'Webhook通知（無制限）'],
+              },
+              {
+                name: 'Business',
+                price: '¥59,800/月',
+                features: ['200,000リクエスト/日', '47都道府県対応', '優先サポート', '商用利用可', 'Webhook通知（無制限）', 'SLA 99.5%保証'],
                 highlighted: true,
+              },
+              {
+                name: 'Enterprise',
+                price: '¥98,000〜/月',
+                features: ['無制限リクエスト', '47都道府県対応', '専任サポート', '商用利用可', 'Webhook通知（無制限）', 'SLA 99.9%保証', 'カスタムデータフィールド'],
               },
             ].map((plan) => (
               <div
