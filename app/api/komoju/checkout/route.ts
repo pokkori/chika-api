@@ -52,8 +52,8 @@ export async function POST(req: NextRequest) {
     body: JSON.stringify({
       email,
       subscription_plan: planId,
-      return_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://chika-api.vercel.app'}/dashboard?registered=1`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://chika-api.vercel.app'}/#pricing`,
+      return_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://auction-property-api.vercel.app'}/dashboard?registered=1`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://auction-property-api.vercel.app'}/#pricing`,
       default_locale: 'ja',
     }),
   });
