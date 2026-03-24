@@ -1,6 +1,8 @@
 import { PlanCard } from '@/components/PlanCard';
 import { CopyableCode } from '@/components/CopyableCode';
 import { StreakBadge } from '@/components/StreakBadge';
+import { StatsCounter } from '@/components/StatsCounter';
+import { PerformanceSection } from '@/components/PerformanceSection';
 
 const curlExample = `curl -H "X-API-Key: YOUR_API_KEY" \\
   "https://auction-property-api.vercel.app/api/v1/auctions?prefecture=13&status=open"`;
@@ -66,6 +68,7 @@ export default function HomePage() {
           <a
             href="/api/auth/register"
             aria-label="無料で競売物件データAPIを始める"
+            className="hover:scale-105 hover:shadow-[0_0_30px_rgba(245,158,11,0.4)] transition-all duration-300"
             style={{
               backgroundColor: '#F59E0B',
               color: '#0F172A',
@@ -84,6 +87,7 @@ export default function HomePage() {
           <a
             href="/docs"
             aria-label="APIドキュメントを見る"
+            className="hover:scale-105 transition-all duration-300"
             style={{
               backgroundColor: 'transparent',
               color: '#F8FAFC',
@@ -105,7 +109,7 @@ export default function HomePage() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="競売物件データAPIをXでシェアする"
-            className="bg-black text-white rounded-lg px-4 py-2"
+            className="bg-black text-white rounded-lg px-4 py-2 hover:scale-105 transition-all duration-300"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -122,6 +126,18 @@ export default function HomePage() {
             Xでシェア
           </a>
         </div>
+      </section>
+
+      {/* Stats Counter */}
+      <section
+        aria-label="サービス統計"
+        style={{
+          maxWidth: 1100,
+          margin: '0 auto',
+          padding: '0 24px 60px',
+        }}
+      >
+        <StatsCounter />
       </section>
 
       {/* Features */}
@@ -180,7 +196,7 @@ export default function HomePage() {
           ].map((f) => (
             <div
               key={f.title}
-              className="backdrop-blur-sm bg-white/10 border border-white/20 shadow-lg rounded-2xl"
+              className="backdrop-blur-md bg-white/5 border border-white/10 shadow-lg rounded-2xl hover:-translate-y-1 transition-transform duration-300"
               style={{
                 padding: 28,
               }}
@@ -211,6 +227,26 @@ export default function HomePage() {
           APIキーを取得したらすぐに使えます
         </p>
         <CopyableCode code={curlExample} language="bash" />
+      </section>
+
+      {/* Performance Section */}
+      <section
+        aria-label="APIパフォーマンス"
+        style={{
+          maxWidth: 1100,
+          margin: '0 auto',
+          padding: '0 24px 60px',
+        }}
+      >
+        <h2
+          style={{ fontSize: 28, fontWeight: 700, textAlign: 'center', marginBottom: 16, color: '#F8FAFC' }}
+        >
+          APIパフォーマンス
+        </h2>
+        <p style={{ fontSize: 16, color: '#94A3B8', textAlign: 'center', marginBottom: 32 }}>
+          安定稼働・高速レスポンスを実現
+        </p>
+        <PerformanceSection />
       </section>
 
       {/* Pricing */}
@@ -282,11 +318,10 @@ export default function HomePage() {
         ].map(({ q, a }) => (
           <details
             key={q}
+            className="backdrop-blur-md bg-white/5 border border-white/10"
             style={{
-              backgroundColor: '#1E293B',
               borderRadius: 8,
               marginBottom: 12,
-              border: '1px solid #334155',
               overflow: 'hidden',
             }}
           >
@@ -335,7 +370,7 @@ export default function HomePage() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="競売物件データAPIをXでシェアする"
-          className="bg-black text-white rounded-lg px-4 py-2"
+          className="bg-black text-white rounded-lg px-4 py-2 hover:scale-105 transition-all duration-300"
           style={{
             display: 'inline-flex',
             alignItems: 'center',

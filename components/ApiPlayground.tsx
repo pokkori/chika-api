@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const ENDPOINTS = [
   {
@@ -34,8 +34,27 @@ export function ApiPlayground() {
   const [selectedEndpoint, setSelectedEndpoint] = useState('/api/v1/auctions');
   const [params, setParams] = useState<Record<string, string>>({});
   const [response, setResponse] = useState<string>('');
+  const [displayedResponse, setDisplayedResponse] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [statusCode, setStatusCode] = useState<number | null>(null);
+  const streamTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!response) { setDisplayedResponse(''); return; }
+    setDisplayedResponse('');
+    let index = 0;
+    const step = () => {
+      index += Math.ceil(response.length / 60);
+      setDisplayedResponse(response.slice(0, index));
+      if (index < response.length) {
+        streamTimerRef.current = setTimeout(step, 16);
+      } else {
+        setDisplayedResponse(response);
+      }
+    };
+    streamTimerRef.current = setTimeout(step, 16);
+    return () => { if (streamTimerRef.current) clearTimeout(streamTimerRef.current); };
+  }, [response]);
 
   const endpoint = ENDPOINTS.find((e) => e.value === selectedEndpoint) ?? ENDPOINTS[0];
 
@@ -195,13 +214,21 @@ export function ApiPlayground() {
           {statusCode !== null && (
             <p style={{ fontSize: 14, color: statusCode < 400 ? '#22C55E' : '#EF4444', marginBottom: 8 }}>
               ステータス: {statusCode}
+              {statusCode < 400 && (
+                <span style={{ marginLeft: 8, fontSize: 12, color: '#94A3B8' }}>
+                  {new Date().toLocaleTimeString('ja-JP')}
+                </span>
+              )}
             </p>
           )}
           <pre
             aria-label="APIレスポンス"
-            style={{ backgroundColor: '#0F172A', padding: 16, borderRadius: 8, fontSize: 13, color: '#E2E8F0', overflowX: 'auto', maxHeight: 400, overflowY: 'auto', margin: 0 }}
+            style={{ backgroundColor: '#0F172A', padding: 16, borderRadius: 8, fontSize: 13, color: '#E2E8F0', overflowX: 'auto', maxHeight: 400, overflowY: 'auto', margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}
           >
-            {response}
+            {displayedResponse}
+            {displayedResponse.length < response.length && (
+              <span style={{ display: 'inline-block', width: 8, height: 14, backgroundColor: '#F59E0B', marginLeft: 2, verticalAlign: 'text-bottom', animation: 'none' }} aria-hidden="true" />
+            )}
           </pre>
         </div>
       )}

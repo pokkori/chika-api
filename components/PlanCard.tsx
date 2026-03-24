@@ -55,6 +55,7 @@ export function PlanCard({ plan, onSelect }: PlanCardProps) {
 
   return (
     <div
+      className="backdrop-blur-md hover:-translate-y-1 transition-transform duration-300"
       style={{
         ...data.cardStyle,
         borderRadius: 12,
@@ -63,6 +64,7 @@ export function PlanCard({ plan, onSelect }: PlanCardProps) {
         display: 'flex',
         flexDirection: 'column',
         gap: 16,
+        background: 'rgba(30, 41, 59, 0.7)',
       }}
     >
       {data.popular && (

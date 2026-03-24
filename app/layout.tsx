@@ -50,6 +50,57 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }),
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              mainEntity: [
+                {
+                  '@type': 'Question',
+                  name: '競売物件データAPIとは？',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: '裁判所公示の不動産競売情報をRESTful APIとして提供するDaaSサービスです。毎日自動更新し、47都道府県の物件データをJSON形式で取得できます。',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: '無料プランで何ができますか？',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: '無料プランでは1日100リクエストまで利用可能です。認証不要のstats APIで全国の統計情報も取得できます。',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'データの更新頻度は？',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: '毎日午前2時（JST）に自動クロールで全国の最新競売公示情報を取得・更新します。',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'APIキーはすぐに発行されますか？',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'はい。メールアドレスを登録するだけで即座に発行されます。クレジットカードは不要です。',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: '商用利用は可能ですか？',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'はい。Basicプラン以上で商用利用が可能です。Freeプランは個人・試作目的のみとなります。',
+                  },
+                },
+              ],
+            }),
+          }}
+        />
       </head>
       <body className={inter.className}>{children}</body>
     </html>
